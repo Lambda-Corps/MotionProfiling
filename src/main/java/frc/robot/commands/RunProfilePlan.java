@@ -7,38 +7,34 @@
 
 package frc.robot.commands;
 
-import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-//02.import frc.robot.Robot;
 import frc.robot.subsystems.DriveTrain;
-import static frc.robot.Constants.*;
 
-
-public class Drive_Backwards extends CommandBase {
-  private final DriveTrain m_driveTrain;
-  private final XboxController m_driverController;
+public class RunProfilePlan extends CommandBase {
+  private final DriveTrain m_dt;
+  private final SendableChooser<String> m_chooser;
+  private final String PROFILE_PATH_DIR = "/home/lvuser/deploy/paths/";
+  private String m_path_str = "";
   /**
-   * Creates a new Drive_Backwards.
+   * Creates a new RunProfilePlan.
    */
-  public Drive_Backwards(DriveTrain driveTrain, XboxController driverController) {
+  public RunProfilePlan(DriveTrain dt, SendableChooser<String> chooser) {
     // Use addRequirements() here to declare subsystem dependencies.
-    m_driveTrain = driveTrain;
-    m_driverController = driverController;
-    addRequirements(m_driveTrain);
+    m_dt = dt;
+    m_chooser = chooser;
+    addRequirements(m_dt);
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+    m_path_str = PROFILE_PATH_DIR + m_chooser.getSelected();
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    double right = m_driverController.getRawAxis(DRIVER_RIGHT_AXIS); // Right X
-    double left  = -m_driverController.getRawAxis(DRIVER_LEFT_AXIS); // Left Y
-
-    m_driveTrain.teleop_drive(-left, right);
   }
 
   // Called once the command ends or is interrupted.

@@ -7,17 +7,13 @@
 
 package frc.robot;
 
+import static frc.robot.Constants.DRIVER_REMOTE_PORT;
+
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
-import frc.robot.commands.AlignWithVision;
-import frc.robot.commands.DefaultDriveTrainCommand;
-import frc.robot.commands.Drive_Backwards;
-import frc.robot.subsystems.DriveTrain;
-import frc.robot.subsystems.Vision;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.button.JoystickButton;
-
-import static frc.robot.Constants.*;
+import frc.robot.commands.DefaultDriveTrainCommand;
+import frc.robot.subsystems.DriveTrain;
 /**
  * This class is where the bulk of the robot should be declared.  Since Command-based is a
  * "declarative" paradigm, very little robot logic should actually be handled in the {@link Robot}
@@ -27,12 +23,9 @@ import static frc.robot.Constants.*;
 public class RobotContainer {
   // The robot's subsystems are defined here
   private final DriveTrain m_drive_train = new DriveTrain();
-  private final Vision m_vision = new Vision();
   
   // The robot's operator interface functionality goes here
   private final XboxController m_driver_controller = new XboxController(DRIVER_REMOTE_PORT);
-  public JoystickButton driver_RB;
-  public JoystickButton driver_A;
 
   /**
    * The container for the robot.  Contains subsystems, OI devices, and commands.
@@ -54,11 +47,8 @@ public class RobotContainer {
    * {@link edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
   private void configureButtonBindings() {
-    driver_RB = new JoystickButton(m_driver_controller, 6);
-    driver_RB.whenHeld(new Drive_Backwards(m_drive_train, m_driver_controller));
-    driver_A = new JoystickButton(m_driver_controller, 1);
-    driver_A.whenHeld(new AlignWithVision(m_drive_train, m_vision));
-    }
+
+  }
 
 
   /**
