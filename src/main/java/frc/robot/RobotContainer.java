@@ -11,8 +11,13 @@ import static frc.robot.Constants.DRIVER_REMOTE_PORT;
 
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.commands.DefaultDriveTrainCommand;
+import frc.robot.commands.RunProfilePlan;
 import frc.robot.subsystems.DriveTrain;
 /**
  * This class is where the bulk of the robot should be declared.  Since Command-based is a
@@ -21,6 +26,10 @@ import frc.robot.subsystems.DriveTrain;
  * (including subsystems, commands, and button mappings) should be declared here.
  */
 public class RobotContainer {
+  // Shuffleboard Interactions
+  private final ShuffleboardTab m_ProfileTab;
+  private final SendableChooser<String> m_pathChooser;
+
   // The robot's subsystems are defined here
   private final DriveTrain m_drive_train = new DriveTrain();
   
@@ -31,6 +40,15 @@ public class RobotContainer {
    * The container for the robot.  Contains subsystems, OI devices, and commands.
    */
   public RobotContainer() {
+    m_pathChooser = new SendableChooser<String>();
+    m_pathChooser.addOption("Drive 10", "drive_ten_");
+    // Setup the Shuffleboard Tab for testing
+    m_ProfileTab = Shuffleboard.getTab("ProfileTest");
+    m_ProfileTab.add("Profile to Run", m_pathChooser)
+      .withWidget(BuiltInWidgets.kComboBoxChooser);
+    m_ProfileTab.add("Run Profile Command", new RunProfilePlan(m_drive_train, m_pathChooser))
+      .withWidget(BuiltInWidgets.kCommand);
+      
     // Set the default commands for the subsystems
     m_drive_train.setDefaultCommand(new DefaultDriveTrainCommand(m_drive_train, m_driver_controller));
 

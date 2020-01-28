@@ -21,7 +21,7 @@ import com.ctre.phoenix.motion.TrajectoryPoint;
  */
 public class TalonMotionProfileGenerator {
 
-    public static BufferedTrajectoryPointStream generateTalonProfile( String path, String file, double metersPerRevolution){
+    public static BufferedTrajectoryPointStream generateTalonProfile( String path, String file, double metersPerRevolution, int ticksPerRotation, boolean reverseDirection){
         
         List<double[]> profile = genArrayFromXeroFile(path + file);
         
@@ -30,12 +30,14 @@ public class TalonMotionProfileGenerator {
                                                     // automatically, you can alloc just one
         /* Insert every point into buffer, no limit on size */
         int totalCnt = profile.size();
+        int direction = reverseDirection ? -1 : 1;
+
         for( int i = 0; i < totalCnt; i++){
             double [] entry = profile.get(0);
             /* for each point, fill our structure and pass it to API */
             point.timeDur = (int)entry[2] * 1000;
-            point.position = (entry[0] * (1 / metersPerRevolution)) * 4096; // Convert Revolutions to Units
-            point.velocity = (entry[1] * (1 / metersPerRevolution)) * 4096 / 600.0; // Convert RPM to Units/100ms
+            point.position = direction * (entry[0] * (1 / metersPerRevolution)) * ticksPerRotation; // Convert Revolutions to Units
+            point.velocity = direction * (entry[1] * (1 / metersPerRevolution)) * ticksPerRotation / 600.0; // Convert RPM to Units/100ms
             point.profileSlotSelect0 = 0; /* which set of gains would you like to use [0,3]? */
             point.profileSlotSelect1 = 0; /* auxiliary PID [0,1], leave zero */
             point.zeroPos = (i == 0); /* set this to true on the first point */
