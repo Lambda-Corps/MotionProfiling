@@ -36,12 +36,12 @@ public class DriveTrain extends SubsystemBase {
   private PeriodicProcessor m_profileProcessor;
 
   /** TODO : Verify these numbers for the target drive train being tested
-   * 512 encoder ticks per axle rotation * 360/120 * 64/20 (gearing) = 4915 encoder ticks per wheel rotation
+   * 512 encoder ticks per axle rotation * 36/12 * 50/34 (gearing) = 2259 encoder ticks per wheel rotation
    * Wheel diameter is 16cm - pi * d (circumference) - Wheel Circumference = 50.27cm
-   * 4915 / 50.27 = 98 ticks/cm
-   * 98/cm = 9800/m
+   * 2259 / 50.27 = 45 ticks/cm
+   * 45/cm = 4500/m
    */
-  private double METERS_PER_REVOLUTION = .5027; // *
+  private double METERS_PER_ROTATION = .5027; // *
   private int TICKS_PER_ROTATION = 512; // Taken from the Grayhill Spec Sheet
    /**
    * Creates a new DriveTrain.
@@ -201,7 +201,7 @@ public class DriveTrain extends SubsystemBase {
   }
 
   public double getMetersPerRevolution(){
-    return METERS_PER_REVOLUTION;
+    return METERS_PER_ROTATION;
   }
 
   public int getTicksPerRotation() {
