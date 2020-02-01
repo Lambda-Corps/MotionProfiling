@@ -59,18 +59,13 @@ public class RunProfilePlan extends CommandBase {
     if( m_leftTraj != null && m_rightTraj != null ){
       m_dt.resetMotionProfile();
       m_isDone = false;
+      m_dt.setProfileStatusString("Starting profile");
       m_dt.startMotionProfile(m_leftTraj, m_rightTraj);
     } else{
       // Something was wrong with the selected profile, just notify and do nothing
       m_isDone = true;
-      Supplier<String> error = () -> "Paths failed to generate profiles";
-      Shuffleboard.getTab("ProfileTest")
-        .addString("Profile Error", error)
-        .withWidget(BuiltInWidgets.kTextView);
+      m_dt.setProfileStatusString("Failed to read in trajectory files");
     }
-    
-
-    
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -79,7 +74,8 @@ public class RunProfilePlan extends CommandBase {
     // Profile is started in initialize, if successfully generated
     if(!m_isDone){
       m_isDone = m_dt.isMotionProfileFinished();
-    }  
+    } 
+    m_dt.setProfileStatusString("Executing Profile");
   }
 
   // Called once the command ends or is interrupted.
@@ -87,6 +83,7 @@ public class RunProfilePlan extends CommandBase {
   public void end(boolean interrupted) {
     // Reset the control mode of the talons to be PercentOutput
     // Set the output to 0 (to prevent any oddities when we come back out of MotionProfile mode)
+    m_dt.setProfileStatusString("Profile end: " + (interrupted ? "INTERRUPTED" : "CLEAN"));
     m_dt.stopMotionProfile();
 
   }

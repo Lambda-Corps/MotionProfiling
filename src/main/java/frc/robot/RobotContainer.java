@@ -44,10 +44,6 @@ public class RobotContainer {
     m_pathChooser.addOption("Drive 10", "drive_ten_");
     // Setup the Shuffleboard Tab for testing
     m_ProfileTab = Shuffleboard.getTab("ProfileTest");
-    m_ProfileTab.add("Profile to Run", m_pathChooser)
-      .withWidget(BuiltInWidgets.kComboBoxChooser);
-    m_ProfileTab.add("Run Profile Command", new RunProfilePlan(m_drive_train, m_pathChooser))
-      .withWidget(BuiltInWidgets.kCommand);
       
     // Set the default commands for the subsystems
     m_drive_train.setDefaultCommand(new DefaultDriveTrainCommand(m_drive_train, m_driver_controller));
@@ -56,6 +52,9 @@ public class RobotContainer {
     // NOTE -- This should not be called until all the subsystems have been instantiated and the 
     // default commands for them have been set.
     configureButtonBindings();
+
+    // Setup Shuffleboard layouts
+    setupShuffleboardComponents();
   }
 
   /**
@@ -77,5 +76,18 @@ public class RobotContainer {
   public Command getAutonomousCommand() {
     // An ExampleCommand will run in autonomous
     return null;
+  }
+
+  private void setupShuffleboardComponents(){
+
+    m_ProfileTab.add("Profile to Run", m_pathChooser)
+      .withWidget(BuiltInWidgets.kComboBoxChooser);
+
+    Shuffleboard.getTab("ProfileTest")
+        .addString("Profile Error", m_drive_train::getProfileStatusString)
+        .withWidget(BuiltInWidgets.kTextView);
+
+    m_ProfileTab.add("Run Profile Command", new RunProfilePlan(m_drive_train, m_pathChooser))
+      .withWidget(BuiltInWidgets.kCommand);
   }
 }

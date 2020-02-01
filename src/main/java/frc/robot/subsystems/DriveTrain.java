@@ -34,6 +34,7 @@ public class DriveTrain extends SubsystemBase {
    **********************************************************************************/
   private SetValueMotionProfile m_profileStatus = SetValueMotionProfile.Disable;
   private PeriodicProcessor m_profileProcessor;
+  private String m_profile_status_string = "No profile run yet";
 
   /** TODO : Verify these numbers for the target drive train being tested
    * 512 encoder ticks per axle rotation * 36/12 * 50/34 (gearing) = 2259 encoder ticks per wheel rotation
@@ -208,6 +209,14 @@ public class DriveTrain extends SubsystemBase {
     return TICKS_PER_ROTATION;
   }
 
+  public String getProfileStatusString(){
+    return m_profile_status_string;
+  }
+
+  public void setProfileStatusString(String status){
+    m_profile_status_string = status;
+  }
+  
   // Private inner class used to spawn a thread with a singular purpose to process the buffer from the high level
   // API buffer, to the low level controller buffer.
   private class PeriodicProcessor implements Runnable {
