@@ -47,14 +47,14 @@ public class RunProfilePlan extends CommandBase {
   @Override
   public void initialize() {
     // 1 - Grab the left and right trajectories for a given profile
-    // 2 - Turn those trajectories into BufferedTrajectory objects for the Talon
+    // 2 - Turnthose  trajectories into BufferedTrajectory objects for the Talon
     // 3 - Reset the current Motion Profile status of the talons
     // 4 - Reset the boolean (done) condition
     // 5 - Start the profile from initialize
     m_path_str = PROFILE_PATH_DIR + m_chooser.getSelected();
 
-    m_leftTraj = TalonMotionProfileGenerator.generateTalonProfile(m_path_str, "_left.csv", m_dt.getMetersPerRevolution(), m_dt.getTicksPerRotation(), false);
-    m_rightTraj = TalonMotionProfileGenerator.generateTalonProfile(m_path_str, "_right.csv", m_dt.getMetersPerRevolution(), m_dt.getTicksPerRotation(), false);
+    m_leftTraj = TalonMotionProfileGenerator.generateTalonProfile(m_path_str, "left.csv", m_dt.getMetersPerRevolution(), m_dt.getTicksPerRotation(), false);
+    m_rightTraj = TalonMotionProfileGenerator.generateTalonProfile(m_path_str, "right.csv", m_dt.getMetersPerRevolution(), m_dt.getTicksPerRotation(), false);
 
     if( m_leftTraj != null && m_rightTraj != null ){
       m_dt.resetMotionProfile();
@@ -64,7 +64,7 @@ public class RunProfilePlan extends CommandBase {
     } else{
       // Something was wrong with the selected profile, just notify and do nothing
       m_isDone = true;
-      m_dt.setProfileStatusString("Failed to read in trajectory files");
+      m_dt.setProfileStatusString("Command Failed, Profile Error");
     }
   }
 
@@ -83,7 +83,7 @@ public class RunProfilePlan extends CommandBase {
   public void end(boolean interrupted) {
     // Reset the control mode of the talons to be PercentOutput
     // Set the output to 0 (to prevent any oddities when we come back out of MotionProfile mode)
-    m_dt.setProfileStatusString("Profile end: " + (interrupted ? "INTERRUPTED" : "CLEAN"));
+    m_dt.setProfileStatusString("Profile end: " + (interrupted ? "Failed" : "Success"));
     m_dt.stopMotionProfile();
 
   }

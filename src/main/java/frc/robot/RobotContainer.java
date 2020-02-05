@@ -11,11 +11,13 @@ import static frc.robot.Constants.DRIVER_REMOTE_PORT;
 
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.XboxController.Button;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.commands.DefaultDriveTrainCommand;
 import frc.robot.commands.RunProfilePlan;
 import frc.robot.subsystems.DriveTrain;
@@ -35,6 +37,7 @@ public class RobotContainer {
   
   // The robot's operator interface functionality goes here
   private final XboxController m_driver_controller = new XboxController(DRIVER_REMOTE_PORT);
+  private final JoystickButton m_driverA = new JoystickButton(m_driver_controller, XboxController.Button.kA.value);
 
   /**
    * The container for the robot.  Contains subsystems, OI devices, and commands.
@@ -44,6 +47,8 @@ public class RobotContainer {
     m_pathChooser.addOption("Drive 10", "drive_ten_");
     // Setup the Shuffleboard Tab for testing
     m_ProfileTab = Shuffleboard.getTab("ProfileTest");
+
+  
       
     // Set the default commands for the subsystems
     m_drive_train.setDefaultCommand(new DefaultDriveTrainCommand(m_drive_train, m_driver_controller));
@@ -64,7 +69,7 @@ public class RobotContainer {
    * {@link edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
   private void configureButtonBindings() {
-
+    m_driverA.whenPressed(new RunProfilePlan(m_drive_train, m_pathChooser));
   }
 
 
@@ -87,7 +92,8 @@ public class RobotContainer {
         .addString("Profile Error", m_drive_train::getProfileStatusString)
         .withWidget(BuiltInWidgets.kTextView);
 
-    m_ProfileTab.add("Run Profile Command", new RunProfilePlan(m_drive_train, m_pathChooser))
-      .withWidget(BuiltInWidgets.kCommand);
+    m_ProfileTab.add("Run Profile Command", new RunProfilePlan(m_drive_train, m_pathChooser));
+
+    m_ProfileTab.add("DriveTrain", m_drive_train);
   }
 }

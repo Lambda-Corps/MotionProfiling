@@ -15,6 +15,7 @@ import com.ctre.phoenix.motorcontrol.InvertType;
 import com.ctre.phoenix.motorcontrol.StatusFrameEnhanced;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 
+import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpiutil.math.MathUtil;
 
@@ -27,6 +28,8 @@ public class DriveTrain extends SubsystemBase {
 
   private final TalonSRX m_rightLeader, m_rightFollower;
   private final TalonSRX m_leftLeader, m_leftFollower;
+
+  private final DoubleSolenoid m_gearbox;
 
 
   /**********************************************************************************
@@ -80,6 +83,8 @@ public class DriveTrain extends SubsystemBase {
     m_rightLeader.setStatusFramePeriod(StatusFrameEnhanced.Status_10_MotionMagic, 10);
     m_leftLeader.configMotionProfileTrajectoryPeriod(20, 10);
     m_rightLeader.setStatusFramePeriod(StatusFrameEnhanced.Status_10_MotionMagic, 10);
+
+    m_gearbox = new DoubleSolenoid(0, 1);
 
   }
 
