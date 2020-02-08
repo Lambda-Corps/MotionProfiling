@@ -8,7 +8,6 @@
 package frc.robot.subsystems;
 
 import com.ctre.phoenix.motion.BufferedTrajectoryPointStream;
-import com.ctre.phoenix.motion.SetValueMotionProfile;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.InvertType;
@@ -18,6 +17,7 @@ import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpiutil.math.MathUtil;
+import frc.robot.utils.InstrumentProfile;
 
 import static frc.robot.Constants.*;
 public class DriveTrain extends SubsystemBase {
@@ -35,9 +35,7 @@ public class DriveTrain extends SubsystemBase {
   /**********************************************************************************
    * Configuration Values for Motion Profiling
    **********************************************************************************/
-  private SetValueMotionProfile m_profileStatus = SetValueMotionProfile.Disable;
   private PeriodicProcessor m_profileProcessor;
-  private String m_profile_status_string = "No profile run yet";
 
   /** TODO : Verify these numbers for the target drive train being tested
    * 512 encoder ticks per axle rotation * 36/12 * 50/34 (gearing) = 2259 encoder ticks per wheel rotation
@@ -180,8 +178,6 @@ public class DriveTrain extends SubsystemBase {
   public void resetMotionProfile(){
     m_rightLeader.clearMotionProfileTrajectories();
     m_leftLeader.clearMotionProfileTrajectories();
-
-    m_profileStatus = SetValueMotionProfile.Disable;
   }
 
   public void startMotionProfile(BufferedTrajectoryPointStream pointsLeft, BufferedTrajectoryPointStream pointsRight){
@@ -213,14 +209,6 @@ public class DriveTrain extends SubsystemBase {
   public int getTicksPerRotation() {
     return TICKS_PER_ROTATION;
   }
-
-  public String getProfileStatusString(){
-    return m_profile_status_string;
-  }
-
-  public void setProfileStatusString(String status){
-    m_profile_status_string = status;
-  }
   
   // Private inner class used to spawn a thread with a singular purpose to process the buffer from the high level
   // API buffer, to the low level controller buffer.
@@ -236,5 +224,9 @@ public class DriveTrain extends SubsystemBase {
     public void shutdown(){
       bisDone = true;
     }
+  }
+
+  public void showInstrumentation() {
+    InstrumentProfile.loop(true, m_leftLeader, m_rightLeader);
   }
 }

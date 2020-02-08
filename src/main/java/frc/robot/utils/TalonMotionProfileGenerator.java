@@ -16,6 +16,8 @@ import java.util.Scanner;
 import com.ctre.phoenix.motion.BufferedTrajectoryPointStream;
 import com.ctre.phoenix.motion.TrajectoryPoint;
 
+import frc.robot.Constants;
+
 /**
  * Add your docs here.
  */
@@ -47,6 +49,45 @@ public class TalonMotionProfileGenerator {
             bufferedStream.Write(point);
         }
 
+        return bufferedStream;
+    }
+
+    public static BufferedTrajectoryPointStream generateExampleProfile(){
+        BufferedTrajectoryPointStream bufferedStream = new BufferedTrajectoryPointStream();
+        boolean forward = true;
+        int totalCnt = CTREProfileExamplePoints.kNumPoints;
+        double [][] profile = CTREProfileExamplePoints.Points;
+        
+        TrajectoryPoint point = new TrajectoryPoint(); // temp for for loop, since unused params are initialized
+                                                       // automatically, you can alloc just one
+
+        /* clear the buffer, in case it was used elsewhere */
+        bufferedStream.Clear();
+
+        /* Insert every point into buffer, no limit on size */
+        for (int i = 0; i < totalCnt; ++i) {
+
+            double direction = forward ? +1 : -1;
+            double positionRot = profile[i][0];
+            double velocityRPM = profile[i][1];
+            int durationMilliseconds = (int) profile[i][2];
+
+            /* for each point, fill our structure and pass it to API */
+            point.timeDur = durationMilliseconds;
+            point.position = direction * positionRot * Constants.kSensorUnitsPerRotation; // Convert Revolutions to
+                                                                                          // Units
+            point.velocity = direction * velocityRPM * Constants.kSensorUnitsPerRotation / 600.0; // Convert RPM to
+                                                                                                  // Units/100ms
+            point.auxiliaryPos = 0;
+            point.auxiliaryVel = 0;
+            point.profileSlotSelect0 = Constants.kPrimaryPIDSlot; /* which set of gains would you like to use [0,3]? */
+            point.profileSlotSelect1 = 0; /* auxiliary PID [0,1], leave zero */
+            point.zeroPos = (i == 0); /* set this to true on the first point */
+            point.isLastPoint = ((i + 1) == totalCnt); /* set this to true on the last point */
+            point.arbFeedFwd = 0; /* you can add a constant offset to add to PID[0] output here */
+
+            bufferedStream.Write(point);
+        }        
         return bufferedStream;
     }
 
