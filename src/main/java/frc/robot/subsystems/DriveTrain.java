@@ -17,6 +17,7 @@ import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpiutil.math.MathUtil;
+import frc.robot.Constants;
 import frc.robot.utils.InstrumentProfile;
 
 import static frc.robot.Constants.*;
@@ -24,11 +25,12 @@ public class DriveTrain extends SubsystemBase {
   private double m_quickStopThreshold = .2;
   private double m_quickStopAlpha = .1;
   private double m_quickStopAccumulator;
-  private double m_deadband = .1; // TODO, tune this deadband to actually work with robot
+  private double m_deadband = .1;
 
   private final TalonSRX m_rightLeader, m_rightFollower;
   private final TalonSRX m_leftLeader, m_leftFollower;
 
+  @SuppressWarnings("unused")
   private final DoubleSolenoid m_gearbox;
 
 
@@ -37,11 +39,11 @@ public class DriveTrain extends SubsystemBase {
    **********************************************************************************/
   private PeriodicProcessor m_profileProcessor;
 
-  /** TODO : Verify these numbers for the target drive train being tested
-   * 512 encoder ticks per axle rotation * 36/12 * 50/34 (gearing) = 2259 encoder ticks per wheel rotation
+  /** 
+   * 512 encoder ticks per axle rotation * 36/12 * 54/30 (gearing) = 2765 encoder ticks per wheel rotation
    * Wheel diameter is 16cm - pi * d (circumference) - Wheel Circumference = 50.27cm
-   * 2259 / 50.27 = 45 ticks/cm
-   * 45/cm = 4500/m
+   * 2765 / 50.27 = 55 ticks/cm
+   * 55/cm = 5500/m
    */
   private double METERS_PER_ROTATION = .5027; // *
   private int TICKS_PER_ROTATION = 512; // Taken from the Grayhill Spec Sheet
@@ -50,7 +52,7 @@ public class DriveTrain extends SubsystemBase {
    */
   public DriveTrain() {
     
-    // TODO -- Finish with phoenix tuner to determine inversion, sensor phase
+    // 
     // and all the rest of the Bring-Up steps for the Talon
     m_rightLeader = new TalonSRX(RIGHT_TALON_LEADER);
     m_rightLeader.configFactoryDefault();
@@ -81,6 +83,16 @@ public class DriveTrain extends SubsystemBase {
     m_rightLeader.setStatusFramePeriod(StatusFrameEnhanced.Status_10_MotionMagic, 10);
     m_leftLeader.configMotionProfileTrajectoryPeriod(20, 10);
     m_rightLeader.setStatusFramePeriod(StatusFrameEnhanced.Status_10_MotionMagic, 10);
+
+    // MotionProfile Settings
+    m_leftLeader.config_kP(0, Constants.kGains_MotProf.kP);
+    m_leftLeader.config_kI(0, Constants.kGains_MotProf.kI);
+    m_leftLeader.config_kD(0, Constants.kGains_MotProf.kD);
+    m_leftLeader.config_kF(0, Constants.kGains_MotProf.kF);
+    m_leftLeader.config_IntegralZone(0, (int) Constants.kGains_MotProf.kIzone);
+    m_leftLeader.configClosedLoopPeakOutput(0, Constants.kGains_MotProf.kPeakOutput);
+    m_leftLeader.configNeutralDeadband(Constants.kNeutralDeadband, 10);
+
 
     m_gearbox = new DoubleSolenoid(0, 1);
 
