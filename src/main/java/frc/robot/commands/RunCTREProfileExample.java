@@ -32,7 +32,7 @@ public class RunCTREProfileExample extends CommandBase {
     m_isDone = false;
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(m_dt);
-    m_status = Shuffleboard.getTab("ProfileTest").add("Profile Status", "Not Run Yet").withWidget(BuiltInWidgets.kTextView).getEntry();
+    m_status = Shuffleboard.getTab("ProfileTest").add("CTRE Profile Status", "Not Run Yet").withWidget(BuiltInWidgets.kTextView).getEntry();
   }
 
   // Called when the command is initially scheduled.

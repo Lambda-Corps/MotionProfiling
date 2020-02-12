@@ -45,7 +45,7 @@ public class RunProfilePlan extends CommandBase {
     m_chooser = chooser;
     addRequirements(m_dt);
 
-    m_status = Shuffleboard.getTab("ProfileTest").add("Profile Status", "Not Run Yet").withWidget(BuiltInWidgets.kTextView).getEntry();
+    m_status = Shuffleboard.getTab("ProfileTest").add("Run Profile Status", "Not Run Yet").withWidget(BuiltInWidgets.kTextView).getEntry();
   }
 
   // Called when the command is initially scheduled.
@@ -63,6 +63,7 @@ public class RunProfilePlan extends CommandBase {
     m_rightTraj = TalonMotionProfileGenerator.generateTalonProfile(m_path_str, "right.csv", m_dt.getMetersPerRevolution(), m_dt.getTicksPerRotation(), false);
 
     if( m_leftTraj != null && m_rightTraj != null ){
+      m_status.forceSetString("Init, starting");
       m_dt.resetMotionProfile();
       m_isDone = false;
       m_dt.startMotionProfile(m_leftTraj, m_rightTraj);
@@ -78,6 +79,8 @@ public class RunProfilePlan extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
+    m_status.forceSetString("Execute");
+
     // Periodically print the status to the console, ONLY if the A button is pressed
     if( m_driver_controller.getAButtonPressed() ){
       m_dt.showInstrumentation();
